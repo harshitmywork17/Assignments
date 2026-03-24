@@ -1,0 +1,99 @@
+
+Problem Statement - Build Multi Linear Regression Model to predict service pack price using printers specifications 
+
+
+Approach :
+
+Built Multi Linear Regression with 18 predictor features 
+Target variable is the Price column from service pack price 
+The Guid links both printer specifications and service pack quote 
+
+The loaded dataset was explored using :
+
+df.head() - to inspect first 5 rows 
+df.isnull().sum - to identify the missing values per column 
+df.info() - to check data types and non null counts 
+df.describe() — to get statistics for numeric columns.
+
+printDPI,listpriceCurrent are stored as strings 
+Category variables - hasA3,hasA4,hascolor,scan,fax 
+
+describe() observations :
+
+speedmono : mean > median indicating right skew , std is also very large indicating higher spread, very wide range 
+
+speedcolor - mean is much larger than median indicating right skew,25 th percentile is 0, atleast 25% of printers have no color.std is also very large indicating outliers 
+
+from service pack data - 190 unique prices means many printer have identical service pack prices 
+
+
+Data Cleaning 
+
+
+- listpricecurrent,price contained dollar sign and ',' so used str.replace and then converted to numeric 
+
+- PrintDPI converted to printdpi_x and printdpi_y 
+- duplicated removed using drop_duplicates 
+
+
+Data Merged on guid using inner join, so that printers and service pack quotes both have common guid 
+
+Device Statistics 
+
+
+- MFDColor,MFD Mono,SF Color,SF Mono  has mean much higher than median 
+- Mode is 0 for all device_price due to zero values 
+- MFD have higher costs than SF
+
+
+
+-- Missing Values & Zero Values
+
+Missing Values imputed with median by fill_na() function 
+Significant outliers present below & above -1.5 IQR & +1.5 IQR 
+
+
+-- Correlation Analysis 
+
+- No correlation found above > 0.85 but found in 0.5 
+- price corelated with standard input capacity,maximuminput capacity,listpricecurrent 
+
+-- Feature Engineering 
+
+One hot encoding done for categorical columns (make,devicetype) using pd.getd_dummies 
+
+- Boolean Columns were converted in 0/1 ( hasA3,hasA4,hascolor,scan,fax) 
+- non predictive features were dropped ( guid,product_number)
+
+
+Train/Test Split 
+
+
+Target: price , Features - 18 
+70:30 split 
+random state = 42 
+
+
+
+-- Model Training 
+
+R^2 = 0.67 for both test and train means no overfitting and model explains 67% of variance in the target variable (price)
+
+Intercept is -151 means if all features are set to zero then the predicted service pack price would be this 
+
+the coefficients that increase predicted price hasa3,Hp printer,hascolor 
+some features decrease service price 
+
+
+
+Residual Analysis 
+
+- Model struggles with outliers
+- In Predicted vs Residuals we can see heteroscedasticity ( variance increases for higher predicted values ) 
+
+
+
+
+
+
+
