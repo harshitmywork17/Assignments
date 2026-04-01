@@ -1,0 +1,77 @@
+Week 6 
+
+Problem Statement - To develop a Multi Linear Regression Model predicting the Service Pack Price 
+
+The Target variable is the price column in service_pack_quote file
+Guid connects both printer_data and service_pack_qoute 
+
+Approach 
+
+- Loading both the datasets and explored the data with 
+df.head(),df.isnull().sum,df.info(),df.describe()
+
+Findings :
+
+-printDPI and listPriceCurrent were strings 
+- Boolean columns were - hasA3,hasA4,hascolor,scan,fax
+
+- For service_pack_quote : 0 nulls in printer data file and no duplicate guid too
+                         32 null values in Price column of service_quote 
+                         Out of 541 rows only 510 unique guids 
+                         12 duplicate rows
+                         45 device product numbers contain # character
+
+
+
+
+Data Cleaning :
+
+- cleaned price by removing whitespace,$ and commas, converted it to numeric 
+removed whitespace fro  all string columns in printer data 
+- split the printDPI string , it had uppercase and lowercase both and had space in between and also few cases where it was '0' too 
+- Merged on guid resulting in 415 rows 
+
+
+Calculated device type statistics like mean,median,mode for both device price and  service pack price. Mean > Median indicating right skewed distribution 
+
+-- MFD device cost much more than single function devices 
+
+
+-- Handling Data & Analysis
+
+--listpricecurrent had 15 NA imputed with median,price had 27 NA that also imputed with median 
+-- Outliers observed considering -1.5 IQR to +1.5 IQR range 
+-- Zero negative price column
+-- HP was dominating 
+-- Calculated correlations and found pairs > 0.5
+
+
+-- Feature Engineering 
+
+One hot encoding done for make and devicetype and also avoid dummy variable trap 
+converted Booleans to 0 and 1 
+dropped guid and device_product_number as they dont contribute to prediction 
+
+-- Training & Testing 
+
+70% train and 30 % test,random state = 42 
+
+maximuminputcapacity, listpricecurrent showed very high correlation 
+
+Training and Testing R^2 indicating no overfitting 
+
+features like hasa3,HP printer,hascolor contribute most in predicting service pack price 
+
+Actual vs Predicted plot shows heteroscedasticity means model is less accuracte for higher service packs 
+
+
+
+
+
+
+
+
+
+
+
+
